@@ -4,180 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sudoku Solver</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color:rgb(107, 35, 35);
-      color: hsl(158, 95%, 34%)
-    }
-    input {
-      width: 50px;
-      height:50px;
-      text-align: center;
-      font-size: 175%;
-      background-color: brown;
-    }
-    table {
-      margin: 30px auto;
-      border-collapse: collapse;
-      
-    }
-    td {
-      border: 10px solid rgb(0, 0, 0);
-      width: 57.5px;
-      height:57.5px;
-      
-    }
-    .button {
-  transition-duration: 0.4s;
-  font-size: 50px;
-  border-radius: 10%;
-  color: hsl(0, 0%, 0%); /* Green */
-  background-color: white;
-  
-}
-h1{
-    font-size: 355%;
-}
-p{
-    font-size: 175%;
-}
-.button:hover {
-  background-color: hsl(158, 95%, 34%); /* Green */
-  color: white;
-}
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <h1>Sudoku Solver</h1>
-  <p>Enter your 9x9 Sudoku puzzle:</p>
-  <form>
-  <table id="sudokuTable" >
-  </table>
-  <button input type="reset" class="button">Reset</button>
-  </form>
-  <button onclick="solveSudoku()" class="button">Solve</button>
-  <script>
-    class SudokuSolver {
-      constructor() {
-          this.N = 9; // Size of the Sudoku grid
-      }
-
-      // Function to check if it's safe to place a value at a given position
-      isSafe(row, col, val, grid) {
-          for (let i = 0; i < this.N; i++) {
-              if (grid[row][i] === val || grid[i][col] === val ||
-                  grid[Math.floor(row / 3) * 3 + Math.floor(i / 3)][Math.floor(col / 3) * 3 + (i % 3)] === val) {
-                  return false;
-              }
-          }
-          return true;
-      }
-
-      // Recursive function to solve the Sudoku puzzle
-      solve(grid) {
-          for (let i = 0; i < this.N; i++) {
-              for (let j = 0; j < this.N; j++) {
-                  if (grid[i][j] === 0) {
-                      for (let k = 1; k <= 9; k++) {
-                          if (this.isSafe(i, j, k, grid)) {
-                              grid[i][j] = k;
-                              let solvePossible = this.solve(grid);
-                              if (solvePossible) {
-                                  return true;
-                              } else {
-                                  grid[i][j] = 0;
-                              }
-                          }
-                      }
-                      return false;
-                  }
-              }
-          }
-          return true;
-      }
-
-      // Function to solve the Sudoku puzzle
-      solveSudoku(grid) {
-          return this.solve(grid);
-      }
-
-      // Function to print the Sudoku grid
-      printGrid(grid) {
-          for (let i = 0; i < this.N; i++) {
-              for (let j = 0; j < this.N; j++) {
-                  console.log(grid[i][j] + " ");
-              }
-              console.log("\n");
-          }
-      }
-    }
-
-    // Function to initialize the Sudoku table
-    function initializeSudokuTable() {
-      const sudokuTable = document.getElementById('sudokuTable');
-      for (let i = 0; i < 9; i++) {
-        const row = sudokuTable.insertRow(i);
-        for (let j = 0; j < 9; j++) {
-          const cell = row.insertCell(j);
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.maxLength = 1;
-          input.addEventListener('input', validateInput);
-          cell.appendChild(input);
-        }
-      }
-    }
-
-    // Function to validate input (allow only digits)
-    function validateInput(event) {
-      const inputValue = event.target.value;
-      event.target.value = inputValue.replace(/[^1-9]/g, '');
-    }
-
-    // Function to retrieve the Sudoku puzzle from the table
-    function getSudokuPuzzle() {
-      const puzzle = [];
-      const rows = document.getElementById('sudokuTable').rows;
-      for (let i = 0; i < 9; i++) {
-        const row = rows[i];
-        const rowData = [];
-        for (let j = 0; j < 9; j++) {
-          const input = row.cells[j].querySelector('input');
-          rowData.push(parseInt(input.value) || 0);
-        }
-        puzzle.push(rowData);
-      }
-      return puzzle;
-    }
-
-    // Function to display the solved Sudoku puzzle on the table
-    function displaySolvedPuzzle(solvedPuzzle) {
-      const rows = document.getElementById('sudokuTable').rows;
-      for (let i = 0; i < 9; i++) {
-        const row = rows[i];
-        for (let j = 0; j < 9; j++) {
-          const input = row.cells[j].querySelector('input');
-          input.value = solvedPuzzle[i][j];
-        }
-      }
-    }
-
-    // Function to solve the Sudoku puzzle
-    function solveSudoku() {
-      const sudokuSolver = new SudokuSolver();
-      const puzzle = getSudokuPuzzle();
-
-      if (sudokuSolver.solveSudoku(puzzle)) {
-        displaySolvedPuzzle(puzzle);
-      } else {
-        alert("No solution exists.");
-      }
-    }
-
-    // Initialize the Sudoku table on page load
-    initializeSudokuTable();
-  </script>
+<body class="bg-gray-100 text-gray-800">
+  <div class="container mx-auto text-center py-8">
+    <h1 class="text-4xl font-bold mb-4">Sudoku Solver</h1>
+    <p class="text-lg mb-4">Enter your 9x9 Sudoku puzzle:</p>
+    <form>
+      <table id="sudokuTable" class="mx-auto border-collapse">
+      </table>
+      <div class="mt-4 flex justify-center space-x-4">
+        <button id="resetButton" type="reset" class="button bg-gray-200 px-6 py-3 rounded-md shadow-md hover:bg-gray-300">
+          Reset
+        </button>
+        <button id="solveButton" type="button" onclick="solveSudoku()" class="button bg-blue-500 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-600">
+          Solve
+        </button>
+      </div>
+    </form>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
